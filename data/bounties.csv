@@ -1,0 +1,101 @@
+Short Description,Type,Value,Link,GitHub Owner
+Z3 fuzzer testing validity of symbolic rewrite rules,Feature,$500,,S-Lykles
+Rockchip RK3588 RKNN NPU backend passing all ops tests,Feature,$500,,
+Flash attention in tinygrad that outperforms normal attention for BERT training run,Feature,$500,,
+Run unsigned firmware on 7900XTX from our driver,Feature,$500,,
+"Move topk, _index_put_impl_, index_tensor, masked_select, and randperm_generator off of cpu in torch_backend",Torch,$200,,
+hlb-CIFAR10 works with tiny torch backend,Torch,$200,,
+"beautiful_mnist_torch uses torch.compile TinyJIT working with TINY_BACKEND=1, see test_compile.py",Torch,$300,,
+gpt-fast outperforming default AMD backend with our torch backend with AM driver (compile + beam),Torch,$400,,
+MultiGPU training works with tiny torch backend,Torch,$500,https://github.com/tinygrad/tinygrad/pull/9317,tocubed
+2x matching engine speed (400ms -> 200ms) external_benchmark_schedule.py,Speed,"$1,000",https://github.com/tinygrad/tinygrad/pull/9737,geohot
+4x matching engine speed (200ms -> 100ms),Speed,"$1,000",,geohot
+8x matching engine speed (100ms -> 50ms),Speed,"$1,000",,geohot
+FP8 support on NVIDIA (with Tensor Cores),Feature,$300,https://github.com/tinygrad/tinygrad/pull/8631,pkotzbach
+AMD LLVM 5%+ faster kernel time for BERT MLPerf (and we use it for our submission),Feature,$250,https://github.com/tinygrad/tinygrad/pull/9680,b1tg
+"Complete z3 index (including mask) validation, behind a flag",Feature,$300,https://github.com/tinygrad/tinygrad/pull/9774,S-Lykles
+Fast OLMoE in tinygrad (50%+ of theoretical max on M3 Max),Upgrade,$300,https://github.com/tinygrad/tinygrad/pull/9625,geohotstan
+(mlperf) Training RetinaNet (double bounty if it gets on MLPerf!),MLPerf,"$1,000",https://github.com/tinygrad/tinygrad/pull/8385,francislata
+(mlperf) RetinaNet on mlperf training 5.0,MLPerf,$300,,francislata
+"WebGPU export_model in main tinygrad (very clean and documented code + docs to use, $2k to be split as they choose)",Refactor,"$2,000",https://github.com/tinygrad/tinygrad/pull/9424,wpmed / hooved
+"Make sure buffers are GCed on CPU and with VIZ, with good tests",Bugfix,$200,,
+Llama 4 Scout running on a tinybox at 100+ tok/s,Feature,$500,,
+Training ResNet and BERT through CLOUD=1 on single machine with similar speed (within 5%),Feature,$500,,uuuvn
+Training ResNet and BERT on 3 GPUs across 2 machines getting 80%+ of same machine speed with only cloud server running on one,Feature,"$1,000",https://github.com/tinygrad/tinygrad/pull/9746,uuuvn
+"RDNA4 Tensor Cores, fix tensor cores for gfx1201 (9070XT)",Feature,$150,https://github.com/tinygrad/tinygrad/pull/9838,b1tg
+CPUGraph working with CLANG+LLVM,Feature,$200,,quortus
+5090 Support in NV Backend,Feature,$300,,
+Fix 'LLVM=1 DEVECTORIZE=0 python3 test/test_ops.py TestOps.test_strided_conv2d_simple',Bugfix,$100,https://github.com/tinygrad/tinygrad/pull/8937,bhavyagada
+"Fix METAL virtual device sync issue and reenable ""Run LLaMA 7B on 4 (virtual) GPUs""",Bugfix,$200,,
+Fix 'TC=3 DEBUG=2 python3 extra/gemm/simple_matmul.py' on METAL,Bugfix,$200,,ignaciosica 
+MFMA(WMMA) Support for MI300X with decent perf,MI300X,$200,https://github.com/tinygrad/tinygrad/pull/9417,ignaciosica 
+tinygrad AMD Runtime support for MI300X with amd_gpu refactor,MI300X,$500,,uuuvn
+Support sync <= HIP sync speed on MI300X,MI300X,$300,,uuuvn
+Runtime + Driver support for RDNA4 (9070XT),Upgrade,$300,,geohot / nimlgen
+"Make OpenCL on Intel compile without opening device, working for A770 and Max 1100",Upgrade,$250,https://github.com/tinygrad/tinygrad/pull/9462,amarmemic
+"Add sqrt support to transcendentals, fixing DSP=1 python test/test_tiny.py TestTiny.test_mnist_model with test",Feature,$100,https://github.com/tinygrad/tinygrad/pull/9542,quortus
+"""TINY_BACKEND=1 python3 test/test_ops.py"" works",Torch,$200,https://github.com/tinygrad/tinygrad/pull/9302,Anish9901
+nanoGPT train works with tiny torch backend,Torch,$200,https://github.com/tinygrad/tinygrad/pull/9283,b1tg
+Fix cat at high level by implementing loop splitting,Speed,$300,,
+Make 'TORCHCUDA=1 NV=1 BEAM=3 python3 test/test_speed_v_torch.py TestSpeed.test_sub' green or yellow (launch overhead),Speed,$300,,
+Make 'BEAM=3 LLVM=1 LLVMOPT=1 python3 test/test_speed_v_torch.py TestSpeed.test_gemm' green or yellow on AMD EPYC,Speed,$300,,
+Make 'BEAM=3 LLVM=1 LLVMOPT=1 python3 test/test_speed_v_torch.py TestSpeed.test_sum' green or yellow on Mac (see stream),Speed,$300,https://github.com/tinygrad/tinygrad/pull/9190,joesphsweeney
+"llama 1B faster than torch on CPU in CI (no weight download needed, just model speed. either LLVM or CLANG okay)",Speed,$500,,
+"165+ TFLOP GEMM (match torch) with multistage kernel on 4090, FP16 or BF16 with FP32 acc",Speed,$500,,
+"Make 'AMX=1 CLANG=1 python3 test/test_speed_v_torch.py TestSpeed.test_gemm' green or yellow (fast AMX, can use BEAM)",Speed,"$1,000",,ignaciosica 
+ACO shader compiler backend working on 7900XTX,Feature,$300,,
+working LLVM backend for AMD cards,Feature,$500,https://github.com/tinygrad/tinygrad/pull/8846,b1tg
+add HEVC decode support through CUVID to the NV driver,Feature,$500,https://github.com/tinygrad/tinygrad/pull/8986,theomonnom
+H100 tensor core support,,$400,,ignaciosica 
+mlperf Inference StableDiffusion,,$200,,tobias17
+High performance parallel BLAKE3 in tinygrad (max O(log(n)) kernels for len(n) message),,$200,,
+fix divmod folding https://github.com/tinygrad/tinygrad/pull/7996#discussion_r1867000424,,$200,,S-Lykles
+fix COMMUTATIVE chain order https://github.com/tinygrad/tinygrad/pull/8082#issuecomment-2523558115,,$200,,S-Lykles
+make tinygrad whisper work on tiny recording (https://github.com/tinygrad/tinygrad/pull/8439),,$200,,
+support/test top 100 onnx model,,$400,,geohotstan
+Support for SQTT tracing on AM driver with outputs loadable by Radeon Graphic Profiler,Feature,$500,https://github.com/tinygrad/tinygrad/pull/9278,uuuvn
+<10s (wall time) hlb_cifar training on up to 6x 7900XTX,,$500,,
+Fast mean+stddev fusion into 1 kernel without new ops,,$500,https://github.com/tinygrad/tinygrad/pull/4019,0xtimmy
+JIT OLMoE in tinygrad (fix going to the CPU for topk),Upgrade,$300,https://github.com/tinygrad/tinygrad/pull/9396,geohotstan
+FSDP in tinygrad! (demo by training an LLM larger than fits on 1 GPU),Feature,$500,https://github.com/tinygrad/tinygrad/pull/8756,KhanerX
+Solve double reduce on conv backward https://github.com/tinygrad/tinygrad/issues/3572 in a clean way (faster!),,$500,,Qazalin
+"Tasteful x86 or ARM64 assembly backend ($1,000 if it supports both) within 10% of O0 speed",,$500,https://github.com/tinygrad/tinygrad/pull/8028,ttomsa
+>20 tok/s running LLaMA 3 70B in FP16 on a tinybox,,$700,,
+tinychat in browser supporting CLANG and WEBGPU,Feature,"$1,000",https://github.com/tinygrad/tinygrad/pull/8464,hooved
+NVIDIA e2e full FP16 matmul speed from Tensor.matmul,,"$1,000",,flammit
+SASS assembly backend within 10% of perf to CUDA on 4090 (see speed_compare_cuda_ptx for compare style) ,,"$1,000",,
+(mlperf) Training Stable Diffusion,MLPerf,"$1,000",,
+(mlperf) Training llama2 70B lora,MLPerf,"$1,000",,
+Proof or disproof of the mergeability of two arbitrary ShapeTrackers in Lean (generic version of https://github.com/tinygrad/tinygrad/pull/2218/files),,"$1,000",,
+O(n) nn.Embedding in one kernel without new ops (supporting BS=128),,"$1,000",,Qazalin
+Get ONNX tastefully moved out of extra (staying under the line limit!),,"$1,000",,geohotstan
+Tenstorrent backend passing all ops tests on Wormhole (+$1k from corsix https://x.com/corsix/status/1880384044728480206),Feature,"$1,000",,
+RDNA3 assembly backend within 10% of perf to HIP (see speed_compare_cuda_ptx for compare style) ,,"$1,000",,
+"RDNA3 assembly backend with +50% BEAM=2 perf compared to HIP, must claim backend bounty first",,"$10,000",,
+,,,,
+,,,,
+Uncolored bounties are up for grabs. Lock it by submitting a good WIP PR (stays locked if I see forward progress in last 5 days),,,,
+Yellow bounties are locked (only to be claimed by owner),,,,
+Blue bounties are pending review,,,,
+Green bounties are complete,,,,
+,,,,
+All bounties paid out at my (geohot) discretion. Code must be clean and maintainable without serious hacks.,,,,
+Paid via USDC on Ethereum (or PayPal if you really insist),,,,
+"For ""Training"" bounties, I must be able to repro in < 24 hours. Can rent/buy most machines. In order to lock bounty, you must post trained weights that meet the accuracy requirement",,,,
+,,,,
+See company goals on https://tinygrad.org,,,,
+"For bounty questions, join the Discord, but please read the question document first. http://www.catb.org/~esr/faqs/smart-questions.html",,,,
+,,,,
+"Three step guide to getting a full time job (if you want one, you can do bounties / propose bounties for as long as you want)",,,,
+1. Do bounties (for a couple weeks),,,,
+2. Intern,,,,
+3. Full time,,,,
+,,,,
+$100 bounties are a few line change and could be 10 minutes if you see it,,,,
+$200 bounties are a couple hours to a day of work and are mostly standalone,,,,
+$500 bounties are a couple days of work and require a few prereqs,,,,
+$1000 bounties require some refactoring to core tinygrad,,,,
+$1000+ bounties require planning and thought and likely a solid week+ of work. you probably should have done other bounties first. i'm happy to give feedback on serious proposals,,,,
+,,,,
+"Remember, tinygrad is an open source project and belongs to us all. It's MIT licensed. I'm just fortunate enough to have some funding to move it along faster.",,,,
+"If you would like to sponsor a new bounty, e-mail george@tinygrad.org. Please include a clear description and a dollar amount.",,,,
