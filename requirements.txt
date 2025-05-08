@@ -1,0 +1,10 @@
+gitpython
+requests
+pandas
+beautifulsoup4
+trafilatura
+sentence-transformers
+chromadb
+ollama
+rich
+langchain
