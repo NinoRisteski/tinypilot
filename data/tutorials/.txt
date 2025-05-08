@@ -1,0 +1,15 @@
+View on Github | View on Website
+All of the pre-requisite knowledge you need before contributing to tinygrad.
+Introduction: Read this first!!
+JIT explained
+Shapetracker explained
+The trick in convolution and arange
+BEAM search and kernel optimization
+The trick in matrix multiplication
+VIZ=1 visualizing the graph rewrite
+Pattern matcher
+Misc.
+Memoryview
+Operator fusion
+UOp is singleton
+LOP3 instruction in PTX and SASS
