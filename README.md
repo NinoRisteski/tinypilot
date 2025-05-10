@@ -1,7 +1,7 @@
 # tinypilot
 ![TinyPilot Main Interface](assets/main-tinypilot.png)
 
-Local app that helps you learn Tinygrad and updates you on the bounties
+Local app that helps you learn [TinyGrad](https://github.com/tinygrad/tinygrad) and updates you on the bounties!
 
 ## Setup
 
