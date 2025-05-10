@@ -19,20 +19,20 @@ class Indexer:
                     with open(os.path.join(root, file), "r") as f:
                         content = f.read()
                         embedding = self.model.encode(content).tolist()
-                        self.collection.add(ids=[f"repo_{file}"], embeddings=[embedding], metadatas=[{"source": file, "type": "code"}])
+                        self.collection.add(ids=[f"repo_{file}"], embeddings=[embedding], documents=[content], metadatas=[{"source": file, "type": "code"}])
 
     def index_bounties(self, bounty_path: str = "data/bounties.csv"):
         bounties = pd.read_csv(bounty_path)
         for idx, row in bounties.iterrows():
             content = " ".join(str(v) for v in row.values)
             embedding = self.model.encode(content).tolist()
-            self.collection.add(ids=[f"bounty_{idx}"], embeddings=[embedding], metadatas=[{"source": "bounties.csv", "type": "bounty"}])
+            self.collection.add(ids=[f"bounty_{idx}"], embeddings=[embedding], documents=[content], metadatas=[{"source": "bounties.csv", "type": "bounty"}])
 
     def index_tutorials(self, scraped_path: str = "data/tutorials"):
         for file in os.listdir(scraped_path):
             with open(os.path.join(scraped_path, file), "r") as f:
                 content = f.read()
                 embedding = self.model.encode(content).tolist()
-                self.collection.add(ids=[f"tutorial_{file}"], embeddings=[embedding], metadatas=[{"source": file, "type": "tutorial"}])
+                self.collection.add(ids=[f"tutorial_{file}"],embeddings=[embedding],documents=[content],metadatas=[{"source": file, "type": "tutorial"}])
 
 
