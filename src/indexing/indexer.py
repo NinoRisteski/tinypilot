@@ -5,12 +5,12 @@ from sentence_transformers import SentenceTransformer
 
 
 class Indexer:
-    def __init__(self, collection_name: str, model_name: str = "all-MiniLM-L6-v2"):
+    def __init__(self, collection_name: str, model_name: str = "all-MiniLM-L6-v2", persist_directory: str = "./chroma_db"):
         self.collection_name = collection_name
         self.model_name = model_name
         self.model = SentenceTransformer(model_name)
-        self.client = chromadb.Client()
-        self.collection = self.client.create_collection(collection_name)
+        self.client = chromadb.PersistentClient(path=persist_directory)
+        self.collection = self.client.get_or_create_collection(collection_name)
 
     def index_repo(self, repo_path: str = "data/tinygrad"):
         for root, _, files in os.walk(repo_path):
