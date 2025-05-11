@@ -7,7 +7,7 @@ class Retriever:
         self.client = chromadb.PersistentClient(path=persist_directory)
         self.collection = self.client.get_collection(collection_name)
 
-    def retrieve(self, query, top_k=5):
+    def retrieve(self, query, top_k=2):
         query_embedding = self.model.encode(query).tolist()
         results = self.collection.query(
             query_embeddings=[query_embedding],

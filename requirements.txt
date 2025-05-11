@@ -5,6 +5,7 @@ beautifulsoup4
 trafilatura
 sentence-transformers
 chromadb
-ollama
 rich
 langchain
+langchain-openai
+python-dotenv
