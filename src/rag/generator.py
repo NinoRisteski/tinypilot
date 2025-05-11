@@ -31,7 +31,7 @@ class Generator:
         return context
 
     async def generate_async(self, query: str, retrieved_docs: List[Dict]) -> str:
-        top_docs = sorted(retrieved_docs, key=lambda x: x["score"], reverse=True)[:3]
+        top_docs = sorted(retrieved_docs, key=lambda x: x["score"], reverse=True)[:2]
         context = "\n\n".join([doc["content"] for doc in top_docs])
         formatted_context = self._format_context(context)
         prompt = self.prompt_template.format(query=query, context=formatted_context)
