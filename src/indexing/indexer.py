@@ -2,15 +2,26 @@ import os
 import pandas as pd
 import chromadb
 from sentence_transformers import SentenceTransformer
+from typing import List, Dict, Any
 
 
 class Indexer:
-    def __init__(self, collection_name: str, model_name: str = "all-MiniLM-L6-v2", persist_directory: str = "./chroma_db"):
+    def __init__(self, collection_name: str, model_name: str = "all-MiniLM-L6-v2", persist_directory: str = "./chroma_db", batch_size: int = 32):
         self.collection_name = collection_name
         self.model_name = model_name
         self.model = SentenceTransformer(model_name)
         self.client = chromadb.PersistentClient(path=persist_directory)
         self.collection = self.client.get_or_create_collection(collection_name)
+        self.batch_size = batch_size
+
+    def process_batch(self, texts: List[str], metadata: List[Dict[str, Any]], ids: List[str]) -> None:
+        if not texts: return
+        
+        embeddings = self.model.encode(texts, show_progress_bar=False)
+        self.collection.add(ids=ids, embeddings=embeddings.tolist(), documents=texts, metadatas=metadata)
+
+    def batch_iterator(self, items: List[Any], batch_size: int):
+        for i in range(0, len(items), batch_size): yield items[i:i + batch_size]
 
     def index_repo(self, repo_path: str = "data/tinygrad"):
         for root, _, files in os.walk(repo_path):

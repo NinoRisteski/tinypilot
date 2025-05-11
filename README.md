@@ -1,39 +1,104 @@
 # tinypilot
 ![TinyPilot Main Interface](assets/main-tinypilot.png)
 
-Local app that helps you learn [TinyGrad](https://github.com/tinygrad/tinygrad) and updates you on the bounties!
+Local agent that helps you learn [TinyGrad](https://github.com/tinygrad/tinygrad) and updates you on the bounties!
+
+## Currently implemented:
+
+### Retrieval
+- Uses SentenceTransformer's "all-MiniLM-L6-v2" model for embeddings
+- ChromaDB for vector storage and similarity search
+
+### Generation 
+- OpenAI's GPT model for response generation
+- Combines retrieved documents with user query
+
+### Indexing
+- Indexes:
+  - Tinygrad repo
+  - Bounties
+  - [mesozoic-egg tutorials](https://github.com/mesozoic-egg/tinygrad-notes)
+- batch processing for efficient embedding generation
+
+### UI
+- Rich text-based terminal interface
+
+## Example
+
+![TinyPilot Usage](assets/usage-tinypilot.png)
 
 ## Setup
 
-1. Create and activate virtual environment:
+1. Create and activate virtual env:
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-2. Install dependencies:
+2. Dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
+3. OpenAI API key:
+```bash
+# Create a .env file in the project root
+echo "OPENAI_API_KEY=your-key-here" > .env
+```
+
 ## Usage
 
+### First Time Setup
 Run the main script to update and index all data:
 ```bash
 python main.py
 ```
 
 This will:
-1. Update the tinygrad repository
-2. Update available bounties
+1. Update the tinygrad repo
+2. Update on bounties
 3. Scrape tutorials
-4. Index and embed all data for semantic search
+4. Index and embed all data for semantic search (patiently wait to finish)
+5. Launch chat
 
-## Dependencies
+### Daily Use
+Once the data is indexed, you can start TinyPilot instantly using:
+```bash
+python tinypilot.py
+```
 
-- chromadb: Vector database for storing embeddings
-- sentence-transformers: For generating text embeddings
-- beautifulsoup4: For web scraping
-- trafilatura: For content extraction
-- pandas: For data handling
-- requests: For HTTP requests
+This will:
+1. Skip the data collection and indexing steps
+2. Load the existing indexed data
+3. Start the interface immediately
+
+## Project Structure
+
+### Backend
+- Python-based RAG system
+- Vector database and embeddings
+- OpenAI integration
+- Rich terminal UI
+
+## Features
+
+- Terminal-based interface for easy interaction
+- Real-time input display
+- Command history
+- Support for codebase queries and bounty information
+- Fast startup using pre-indexed data
+
+## Commands
+
+- Type your question to get information about the tinygrad codebase or bounties
+- `clear` - Clear the chat history
+- `exit` - Quit the application
+
+## Examples
+
+- "What is lazy evaluation in tinygrad?"
+- "Show me the latest bounties"
+- "How does the backward pass work?"
+
+
+

@@ -2,10 +2,10 @@ from src.manager.repo_updater import update_repo
 from src.manager.bounties_updater import bounties
 from src.manager.tutorial_scraper import scrape_tutorials
 from src.indexing.indexer import Indexer
-from src.rag.retriever import Retriever
-from src.rag.generator import Generator
+from src.ui.interface import ChatbotInterface
 import os
 import sys
+import time
 
 def check_openai_api_key():
     if not os.getenv("OPENAI_API_KEY"):
@@ -21,6 +21,8 @@ def main():
         print("export OPENAI_API_KEY='your-api-key'")
         sys.exit(1)
     
+    start_time = time.time()
+    
     update_repo()
     print("tinygrad repo: updated.")
     bounties()
@@ -33,25 +35,15 @@ def main():
     indexer.index_repo()
     indexer.index_bounties()
     indexer.index_tutorials()
-    print("data: indexed and embedded!")
+    
+    end_time = time.time()
+    print(f"data: indexed and embedded in {end_time - start_time:.2f} seconds!")
     
     print("\nInitializing RAG system...")
-    retriever = Retriever()
-    generator = Generator()
+    chatbot = ChatbotInterface()
     print("RAG system ready!")
     
-    print("\nYou can now start learning tinygrad with the tinypilot! Type 'exit' to quit.")
-    while True:
-        query = input("\nYour question: ").strip()
-        if query.lower() == 'exit':
-            break
-            
-        results = retriever.retrieve(query)
-        print(f"\nFound {len(results)} relevant documents")
-        
-        response = generator.generate(query, results)
-        print("\nAnswer:")
-        print(response)
+    chatbot.run()
 
 if __name__ == "__main__":
     main()
