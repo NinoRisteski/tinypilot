@@ -80,25 +80,5 @@ This will:
 - OpenAI integration
 - Rich terminal UI
 
-## Features
-
-- Terminal-based interface for easy interaction
-- Real-time input display
-- Command history
-- Support for codebase queries and bounty information
-- Fast startup using pre-indexed data
-
-## Commands
-
-- Type your question to get information about the tinygrad codebase or bounties
-- `clear` - Clear the chat history
-- `exit` - Quit the application
-
-## Examples
-
-- "What is lazy evaluation in tinygrad?"
-- "Show me the latest bounties"
-- "How does the backward pass work?"
-
 
 
