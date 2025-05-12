@@ -24,7 +24,7 @@ class ChatbotInterface:
 
     def display_welcome(self):
         welcome_message = """
-        Welcome to TinyPilot!
+        Welcome to <tinypilot>!
         
         Ask questions about the tinygrad codebase, or bounties.
         Examples:
@@ -42,7 +42,7 @@ class ChatbotInterface:
         """Display the chat history"""
         for q, r in self.history[-10:]:
             self.console.print(f"[bold cyan]You:[/bold cyan] {q}")
-            self.console.print(f"[bold green]Assistant:[/bold green] {r}\n")
+            self.console.print(f"[bold green]tinypilot:[/bold green] {r}\n")
 
     def get_input(self):
         """Get input character by character"""
@@ -58,14 +58,13 @@ class ChatbotInterface:
             while True:
                 char = sys.stdin.read(1)
                 
-                if char == '\r' or char == '\n':  # Enter key
-                    print()  # Move to next line
+                if char == '\r' or char == '\n': 
+                    print()  
                     return self.current_input
                 
-                elif char == '\x7f':  # Backspace/Delete
+                elif char == '\x7f':  
                     if self.current_input:
                         self.current_input = self.current_input[:-1]
-                        # Clear the current line and rewrite
                         sys.stdout.write('\b \b')
                         sys.stdout.flush()
                 
@@ -78,7 +77,6 @@ class ChatbotInterface:
                     raise KeyboardInterrupt
                 
         finally:
-            # Restore terminal settings
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
     def clear_screen(self):
@@ -107,16 +105,13 @@ class ChatbotInterface:
                 continue
 
             try:
-                # Show loading state
                 with Progress(transient=True) as progress:
                     task = progress.add_task("[cyan]Processing query...", total=None)
                     
-                    # Process query using RAG system
                     docs = self.retriever.retrieve(query)
                     response = self.generator.generate(query, docs)
                     self.history.append((query, response))
                     
-                    # Clear screen and redraw
                     self.clear_screen()
                     self.display_welcome()
                     self.display_history()
