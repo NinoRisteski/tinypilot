@@ -15,7 +15,7 @@ class Generator:
             input_variables=["query", "context"],
             template="""
             You are a helpful assistant answering questions about the tinygrad codebase, bounties, and related tutorials.
-            Use the retrieved context to provide an accurate answer. If the context doesn't answer the question, use your general knowledge but prioritize the context.
+            Use the retrieved context to provide an accurate answer. If the context doesn't answer the question, provide an explanation with first principles but prioritize the context.
 
             Context:
             {context}
