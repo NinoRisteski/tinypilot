@@ -35,9 +35,16 @@ class Indexer:
     def index_bounties(self, bounty_path: str = "data/bounties.csv"):
         bounties = pd.read_csv(bounty_path)
         for idx, row in bounties.iterrows():
-            content = " ".join(str(v) for v in row.values)
+            content = f"• {row['Short Description']}\n"
+            content += f"  - Type: {row['Type']}\n"
+            content += f"  - Value: {row['Value']}\n"
+            if pd.notna(row['GitHub Owner']) and row['GitHub Owner']:
+                content += f"  - GitHub Owner: {row['GitHub Owner']}\n"
+            if pd.notna(row['Link']) and row['Link']:
+                content += f"  - Link: {row['Link']}\n"
+                
             embedding = self.model.encode(content).tolist()
-            self.collection.add(ids=[f"bounty_{idx}"], embeddings=[embedding], documents=[content], metadatas=[{"source": "bounties.csv", "type": "bounty"}])
+            self.collection.add(ids=[f"bounty_{idx}"], embeddings=[embedding], documents=[content], metadatas=[{"source": "bounties.csv","type": "bounty","bounty_type": row['Type'],"value": row['Value']}])
 
     def index_tutorials(self, scraped_path: str = "data/tutorials"):
         for file in os.listdir(scraped_path):

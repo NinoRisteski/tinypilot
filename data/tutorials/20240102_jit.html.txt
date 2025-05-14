@@ -2,7 +2,7 @@ Latest commit id when I wrote this was f2bee341970f718298d020d7b38cb33239c67b73,
 Compiling code for GPU device has two steps, 1. compile the kernel source code into byte code, 2. convert the byte code into
 GPU executable. The first step is always cached and reused in Tinygrad. The second step, however,
 requires explicit usage of TinyJit
-, which is what we are maining focusing on when talking about JIT.
+, which is what we are mainly focusing on when talking about JIT.
 When we compute a tensor, some GPU code must be rendered. For example, a 4 by 4 matrix elementwise addition might render this CUDA code:
 extern "C" __global__ void __launch_bounds__(1) E_16(float* data0, float* data1, float* data2) {
 int gidx0 = blockIdx.x; /* 16 */
@@ -62,7 +62,7 @@ On CUDA, it’s just called a graph.
 Although on cuda it may seem less obvious if you are using the triple angle bracket calling form:
 (e.g. add_vectors<<< blk_in_grid, thr_per_blk >>>(d_A, d_B, d_C);
 ), but under the hood it just calls the same APIs for you.
-Initializing the compute graph is similar to compiling source code, and could take some time, but it is re-useable. Each GPU platform also provide instructions on how to re-use them. See this for CUDA, and the actual API we call. On apple, this is referred to as “IndirectCommandEncoding”, see its usage here. On WebGPU, it is called GPURenderBundleEncoder
+Initializing the compute graph is similar to compiling source code, and could take some time, but it is re-useable. Each GPU platform also provide instructions on how to re-use them. See this for CUDA, and the actual API we call. On Apple, this is referred to as “IndirectCommandEncoding”, see its usage here. On WebGPU, it is called GPURenderBundleEncoder
 Reusing the compute graph is what TinyJit does!
 When a tensor is realized, a set of GPU commands are created. A function wrapped with TinyJit
 will record those
@@ -167,7 +167,7 @@ def __call__(self, tokens:Tensor, start_pos:int, temperature:float=0.0, top_k:in
 if tokens.shape[0:2] == (1,1) and self.forward_jit is not None and start_pos != 0:
 return self.forward_jit(tokens, Variable("start_pos", 1, self.max_context).bind(start_pos), temperature, top_k, top_p, alpha_f, alpha_p)
 return self.forward(tokens, start_pos, temperature, top_k, top_p, alpha_f, alpha_p)
-And in the MNIST example, the model itself isn’t decorated with JIT, but rather, the training loop hanldes it:
+And in the MNIST example, the model itself isn’t decorated with JIT, but rather, the training loop handles it:
 class Model:
 def __init__(self):
 self.layers: List[Callable[[Tensor], Tensor]] = [
@@ -187,7 +187,7 @@ been describing so far, but one important note is the fact it is batch multiple 
 Sometimes the kernels that follow one another may not be able to be batched, and as a result, TinyJit will just
 re-use the previously created CompiledRunner
 , not taking advantage of the graph capability.
-Here I give a contrieved example, it illustrates the reason why kernels aren’t batched/graphed, but in future version of tinygrad, it might be improved such that they get batched properly. In multi gpu training, we often have two tensors sharded on two devices doing identical work, this result in the same kernel being dispatched on each device. If the order is interleaved, then JIT won’t be able to batch them:
+Here I give a contrived example, it illustrates the reason why kernels aren’t batched/graphed, but in a future version of tinygrad, it might be improved such that they get batched properly. In multi gpu training, we often have two tensors sharded on two devices doing identical work, this result in the same kernel being dispatched on each device. If the order is interleaved, then JIT won’t be able to batch them:
 from tinygrad import Tensor, TinyJit, UOp
 import time
 import tinygrad.nn as nn
@@ -214,11 +214,11 @@ if isinstance(ji.prg, CompiledRunner): ji_graph_dev = ji.prg.dev
 can_share_graph = (ji_graph_dev == current_device or (isinstance(graph_class, type) and issubclass(graph_class, MultiGraphRunner)) and
 type(ji_graph_dev) is type(current_device))
 current_device = ji_graph_dev
-Because the scheduling has interleaved the kernel for two devices, this mechanism failed to recognize the continuity. And as a result, each time TinyJit tries to batch, it sees just one kernel, and refuse to do that, hence the error message. Remember that graphing/batching have their own overhead and is only justified when you have many kernels.
+Because the scheduling has interleaved the kernel for two devices, this mechanism failed to recognize the continuity. And as a result, each time TinyJit tries to batch, it sees just one kernel, and refuses to do that, hence the error message. Remember that graphing/batching have their own overhead and is only justified when you have many kernels.
 TinyJit now will just execute those kernels as is, only re-using the CompiledRunner
 from previous compilation and will
 call the GPU API that recompile them into the device. This is indicated by the magenta color for the kernels in the output.
-TinyJit holds on to all the buffers throughout its life time, this means the memory usage will remain at the max amount needed for a function call. This may cause issue if your function requires memory release in the middle.
+TinyJit holds on to all the buffers throughout its life time, this means the memory usage will remain at the max amount needed for a function call. This may cause issues if your function requires memory release in the middle.
 For example, if you have an intermediate buffer to hold some data, and is later released:
 weight = Tensor.empty(4, 4)
 def forward(x: Tensor):
@@ -231,7 +231,7 @@ ret = forward(x).realize()
 Note that I have added .contiguous()
 and realize()
 just to prevent certain optimization, in order to show this
-contrieved example. It may look weird, but it is one of multi GPU examples, where you have shuffle data between
+contrived example. It may look weird, but it is one of multi GPU examples, where you have shuffle data between
 devices. During the process, an intermediate buffer is allocated to hold the temporary data, and then released. It
 is similar to using a temporary variable when swapping two variables:
 temp = a
@@ -312,9 +312,9 @@ ctx.realize()
 Why’s that? TinyJit reuses the buffer, but cat
 is a lazy operation. When we are concatenating three tensors, what
 cat
-does it pad each with the required amount, and then add together. For example, if you are catting three
+does is pad each with the required amount, and then add together. For example, if you are catting three
 rows, then the first row will be expanded into three rows, with the last two rows being zeros. Second tensor
-will have the first and last row having zeros, and so on. But because tinyjit is re-using the buffers, you are
+will have the first and last row having zeros, and so on. But because TinyJit is re-using the buffers, you are
 essentially just adding the same tensor thrice. Let’s use VIZ=1
 flag to see this
 (check my other post on this tool):

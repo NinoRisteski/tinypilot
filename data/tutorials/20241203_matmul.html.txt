@@ -1,9 +1,9 @@
-There are many animated explanation. for matrix multiplication, and tend to lead us into thinking of the implementation as something like:
+There are many animated explanations for matrix multiplication, and tend to lead us into thinking of the implementation as something like:
 def matmul(a: Tensor, b: Tensor):
 for row in a:
 for col in b:
 #...
-The pattern here is that you are thinking of the tensor operation as rows and columns, manipulating elements indivisually. the most scalable approach because it requires you to hand code every possible variations and optimize them individually. Tinygrad takes advantage of the fact that every tensor operation is either elementwise, or reduction. The obvious advantage is to build up abstraction that makes optimization easier (think of this in the context of Complex Instruction Set Architecture vs RISC).
+The pattern here is that you are thinking of the tensor operation as rows and columns, manipulating elements individually. the most scalable approach because it requires you to hand code every possible variations and optimize them individually. Tinygrad takes advantage of the fact that every tensor operation is either elementwise, or reduction. The obvious advantage is to build up abstraction that makes optimization easier (think of this in the context of Complex Instruction Set Architecture vs RISC).
 An elementwise op describes operation with no changes to the number of element, for example, multiplication:
 Tensor.empty(4, 4) * Tensor.empty(4, 4) # ---> output shape is (4, 4)
 A reduce op is something that reduces the number of elment, usually along an axis, for example, sum

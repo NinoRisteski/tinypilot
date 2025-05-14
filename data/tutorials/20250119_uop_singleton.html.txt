@@ -42,7 +42,7 @@ UOp(Ops.DEFINE_GLOBAL, dtypes.void, arg=2, src=()),))
 print(a == b) # True
 print(a == c) # False
 print(b == c) # False
-Note that the UOp usage here are just made up. The actual UOp tinygrad generated are more complex and have more rules.
+Note that the UOp usage here is just made up. The actual UOp tinygrad generated are more complex and have more rules.
 Singleton pattern makes it easy to modify, transform and compare the AST. For example if you want to check if your trees
 are “almost equal”. We can see that a
 and c

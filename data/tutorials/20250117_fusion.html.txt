@@ -49,10 +49,11 @@ If you run it with DEBUG=4
 , you should see the same output as if you had called .realize()
 on b
 .
-Contiguous op works similar to that of pytorch, where a new tensor is created and have its content laid out linearly in memory. Unlike pytorch however, this new memory isn’t allocated immediately. It does return a new Tensor instance, but it’s done in the same way like any other operations (addition, multiply, reshape, etc.), where a new UOp is added to the AST tree.
+Contiguous op works similar to that of pytorch, where a new tensor is created and has its content laid out linearly in memory. Unlike pytorch however, this new memory isn’t allocated immediately. It does return a new Tensor instance, but it’s done in the same way like any other operations (addition, multiply, reshape, etc.), where a new UOp is added to the AST tree.
 In this case, it adds an Ops.CONTIGUOUS
 on the UOp AST tree. If we run the script with VIZ=1
-, we can see how c is represented:
+, we can see how c
+is represented:
 See the contiguous node? That’s all there is to the Op per se.
 When this AST is lowered and turned into executable kernels, Ops.CONTIGUOUS
 acts as a breakpoint, such that the tree

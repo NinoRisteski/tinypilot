@@ -68,7 +68,7 @@ acc0 = (acc0+val0.x+val0.y);
 *(data0+gidx0) = acc0;
 }
 Note that certain values don’t make sense, for example if you are iterating four times, you can’t unroll it thrice.
-Upcasting refers to making the kernel process more elements. One example is shown earlier where we launched 1 kernel to process all four rows. Here’s another example, suppose we are doing an elemenwise add:
+Upcasting refers to making the kernel process more elements. One example is shown earlier where we launched 1 kernel to process all four rows. Here’s another example, suppose we are doing an elementwise add:
 a = Tensor.empty(4, 4)
 b = Tensor.empty(4, 4)
 c = a + b
@@ -139,7 +139,7 @@ This optimization refers to the techniques of using shared memory (__shared__
 in CUDA and threadgroup
 in Metal).
 Here’s a good explanation outlining its usage and advantage.
-It’s an optimzation for the reduce axis, so I will use the ast from our sum example, and apply the opt as Opt(OptOps.GROUP, 0, 4)
+It’s an optimization for the reduce axis, so I will use the ast from our sum example, and apply the opt as Opt(OptOps.GROUP, 0, 4)
 ,
 resulting kernel is:
 kernel void r_4_4(device float* data0, device float* data1, uint3 gid [[threadgroup_position_in_grid]], uint3 lid [[thread_position_in_threadgroup]]) {
@@ -223,7 +223,7 @@ acc1 = (acc1+val1);
 *(data0+gidx0) = acc1;
 }
 }
-in comparison, Opt(OptOps.GROUPTOP, 0, 2)
+In comparison, Opt(OptOps.GROUPTOP, 0, 2)
 would lead to:
 kernel void r_4_2_2(device float* data0, device float* data1, uint3 gid [[threadgroup_position_in_grid]], uint3 lid [[thread_position_in_threadgroup]]) {
 threadgroup float temp0[2];
@@ -257,7 +257,7 @@ lidx0 ridx0 index
 1 0 1 --> and this take place at the same time
 1 1 3
 This takes advantage of the fact that threads run in parallel, so the same iteration of the loop also occur in parallel, having them access consecutive elements speed up memory access.
-In contrast, GROUPTOP is the oppositve, it lets the thread itself access two elements:
+In contrast, GROUPTOP is the opposite, it lets the thread itself access two elements:
 lidx0 ridx0 index
 0 0 0
 0 1 1
