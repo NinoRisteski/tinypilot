@@ -28,7 +28,7 @@ class Generator:
             When answering questions about bounties:
             1. ALWAYS list ALL relevant bounties from the context
             2. Format each bounty clearly with bullet points
-            3. If asked about specific value/type, prioritize those bounties but still mention others
+            3. If asked about specific value/type, prioritize those bounties
             4. If no bounties match the specific criteria, say so explicitly
             5. Include ALL available information for each bounty (Type, Value, GitHub Owner, Link)
             
