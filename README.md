@@ -23,6 +23,10 @@ Local agent that helps you learn [TinyGrad](https://github.com/tinygrad/tinygrad
 ### UI
 - Rich text-based terminal interface
 
+### Chat History
+- Queries and their answers logged to a SQLite database.
+- This database is stored as `chat_history.db`
+
 ## Example
 
 ![TinyPilot Usage](assets/usage-tinypilot.png)
