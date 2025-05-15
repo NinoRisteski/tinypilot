@@ -220,3 +220,5 @@ ENV/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+chat_history.db

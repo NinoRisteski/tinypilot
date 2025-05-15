@@ -7,6 +7,7 @@ import sys
 import termios
 import tty
 import os
+import sqlite3
 
 class ChatbotInterface:
     def __init__(self, retriever=None, generator=None):
@@ -14,6 +15,7 @@ class ChatbotInterface:
         try:
             self.retriever = retriever or Retriever()
             self.generator = generator or Generator(model_name="gpt-4o-mini-2024-07-18")
+            self.create_db()  
         except Exception as e:
             self.console.print(f"[red]Error initializing RAG system: {str(e)}[/red]")
             sys.exit(1)
@@ -21,6 +23,24 @@ class ChatbotInterface:
         self.current_input = ""
         self.clear_screen()
         self.display_welcome()
+
+    def create_db(self):
+        self.db_conn = sqlite3.connect("chat_history.db")
+        cursor = self.db_conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS interactions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                query TEXT,
+                answer TEXT
+            )
+        """)
+        self.db_conn.commit()
+
+    def db_logs(self, query: str, answer: str):
+        cursor = self.db_conn.cursor()
+        cursor.execute("INSERT INTO interactions (query, answer) VALUES (?, ?)", (query, answer))
+        self.db_conn.commit()
 
     def display_welcome(self):
         welcome_message = """
@@ -39,25 +59,19 @@ class ChatbotInterface:
         self.console.print(Panel(welcome_message, title="Welcome", border_style="green"))
 
     def display_history(self):
-        """Display the chat history"""
         for q, r in self.history[-10:]:
             self.console.print(f"[bold cyan]You:[/bold cyan] {q}")
             self.console.print(f"[bold green]tinypilot:[/bold green] {r}\n")
 
     def get_input(self):
-        """Get input character by character"""
         self.current_input = ""
         self.console.print("> ", end="", style="bold")
         
-        # Save terminal settings
         old_settings = termios.tcgetattr(sys.stdin)
         try:
-            # Set terminal to raw mode
             tty.setraw(sys.stdin.fileno())
-            
             while True:
                 char = sys.stdin.read(1)
-                
                 if char == '\r' or char == '\n': 
                     print()  
                     return self.current_input
@@ -73,14 +87,13 @@ class ChatbotInterface:
                     sys.stdout.write(char)
                     sys.stdout.flush()
                 
-                elif char == '\x03':  # Ctrl+C
+                elif char == '\x03': 
                     raise KeyboardInterrupt
                 
         finally:
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
     def clear_screen(self):
-        """Clear the terminal screen"""
         os.system('cls' if os.name == 'nt' else 'clear')
 
     def clear_history(self):
@@ -95,6 +108,8 @@ class ChatbotInterface:
             
             if query.lower() == "exit":
                 self.console.print("[bold yellow]Goodbye![/bold yellow]")
+                if hasattr(self, 'db_conn') and self.db_conn:
+                    self.db_conn.close()
                 break
             elif query.lower() == "clear":
                 self.clear_history()
@@ -111,6 +126,7 @@ class ChatbotInterface:
                     docs = self.retriever.retrieve(query)
                     response = self.generator.generate(query, docs)
                     self.history.append((query, response))
+                    self.db_logs(query, response)
                     
                     self.clear_screen()
                     self.display_welcome()
@@ -119,4 +135,5 @@ class ChatbotInterface:
             except Exception as e:
                 error_msg = f"[red]Error processing query: {str(e)}[/red]"
                 self.history.append((query, error_msg))
+                self.db_logs(query, error_msg)
                 self.console.print(f"[red]An error occurred. Please try again.[/red]") 
