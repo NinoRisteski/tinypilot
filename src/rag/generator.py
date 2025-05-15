@@ -13,7 +13,7 @@ class Generator:
         self.llm = ChatOpenAI(model_name=model_name, temperature=0.0, api_key=os.getenv("OPENAI_API_KEY"))
         self.default_template = """
             You are a helpful assistant answering questions about the tinygrad codebase, bounties, and related tutorials.
-            Use the retrieved context to provide an accurate answer. If the context doesn't answer the question, provide an explanation with first principles but prioritize the context.
+            Use the retrieved context to provide an accurate answer. Use the context to provide an explanation with first principles but prioritize the context.
 
             Context:
             {context}
