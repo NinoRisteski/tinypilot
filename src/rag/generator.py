@@ -13,16 +13,39 @@ class Generator:
         self.llm = ChatOpenAI(model_name=model_name, temperature=0.0, api_key=os.getenv("OPENAI_API_KEY"))
         self.default_template = """
             You are a helpful assistant answering questions about the tinygrad codebase and related concepts.
-            Follow these guidelines when answering:
-            1. First check if there are any tutorials in the context that address the question
-            2. If tutorials exist, use them as the primary source of information and explain step by step
-            3. For concepts covered in tutorials, supplement with first principles only to enhance understanding
-            4. For questions without tutorial coverage:
-               - Use the provided context as the primary source
-               - Fall back to fundamental ML/programming concepts only when necessary
-               - Be explicit about what information comes from context vs general knowledge
-            5. NEVER make up or hallucinate information - if something is unclear, say so
-            6. Always ground your explanations in the available context
+            
+            IMPORTANT: The context contains two main sections:
+            1. TUTORIAL CONTENT - Each tutorial is clearly marked with "=== Tutorial: filename ==="
+            2. ADDITIONAL CONTEXT - Other relevant documentation and code
+            
+            You MUST follow these rules when answering:
+            
+            1. Tutorial Usage (MANDATORY):
+               - ALWAYS check for and use relevant tutorials first
+               - Explicitly mention which tutorial(s) you're using in your response
+               - Quote relevant parts from tutorials to support your explanation
+               - Use tutorial examples and code snippets when available
+            
+            2. Response Structure:
+               - Start with "I'll explain this using the [tutorial name] tutorial..."
+               - Quote relevant tutorial sections using "..." 
+               - Follow the tutorial's explanation structure
+               - Only use additional context to supplement tutorial information
+            
+            3. When Multiple Tutorials Exist:
+               - Mention all relevant tutorials
+               - Synthesize information in a logical order
+               - Explain how the tutorials complement each other
+            
+            4. When No Tutorials Match:
+               - Explicitly state that no tutorials directly address the question
+               - Then use the additional context
+               - Be clear about what information comes from where
+            
+            5. Accuracy:
+               - Never make up or hallucinate information
+               - If something is unclear, say so explicitly
+               - Always ground explanations in the provided context
 
             Context:
             {context}
@@ -58,13 +81,36 @@ class Generator:
 
     async def generate_async(self, query: str, retrieved_docs: List[Dict]) -> str:
         is_bounty_query = "bounty" in query.lower() or "bounties" in query.lower()
+        
         if is_bounty_query:
             bounty_docs = [doc for doc in retrieved_docs if doc["metadata"].get("type") == "bounty"]
             if bounty_docs:
                 retrieved_docs = bounty_docs
+                top_docs = sorted(bounty_docs, key=lambda x: x["score"], reverse=True)
+                context = "\n\n".join([doc["content"] for doc in top_docs])
+        else:
+            tutorial_docs = [doc for doc in retrieved_docs if doc["metadata"].get("type") == "tutorial"]
+            other_docs = [doc for doc in retrieved_docs if doc["metadata"].get("type") != "tutorial"]
+            sorted_tutorials = sorted(tutorial_docs, key=lambda x: x["score"], reverse=True)
+            sorted_others = sorted(other_docs, key=lambda x: x["score"], reverse=True)
+            
+            tutorial_context = ""
+            if sorted_tutorials:
+                tutorial_sections = []
+                for doc in sorted_tutorials:
+                    section = f"=== Tutorial: {doc['metadata']['source']} ===\n\n"
+                    section += doc["content"]
+                    tutorial_sections.append(section)
+                tutorial_context = "\n\n".join(tutorial_sections)
+            
+            other_context = "\n\n".join([doc["content"] for doc in sorted_others])
+            
+            context = ""
+            if tutorial_context:
+                context = f"=== TUTORIAL CONTENT ===\n\n{tutorial_context}\n\n"
+            if other_context:
+                context += f"=== ADDITIONAL CONTEXT ===\n\n{other_context}"
 
-        top_docs = sorted(retrieved_docs, key=lambda x: x["score"], reverse=True)
-        context = "\n\n".join([doc["content"] for doc in top_docs])
         formatted_context = self._format_context(context)
         prompt_template = self.bounty_prompt if is_bounty_query else self.default_prompt
         prompt = prompt_template.format(query=query, context=formatted_context)

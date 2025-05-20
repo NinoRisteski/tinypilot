@@ -7,16 +7,21 @@ class Retriever:
         self.client = chromadb.PersistentClient(path=persist_directory)
         self.collection = self.client.get_collection(collection_name)
 
-    def retrieve(self, query, top_k=2):
+    def retrieve(self, query, top_k=5):
         query_embedding = self.model.encode(query).tolist()
+        
         if "bounty" in query.lower() or "bounties" in query.lower():
-            results = self.collection.query(query_embeddings=[query_embedding], n_results=100, where={"type": "bounty"}, include=["metadatas", "documents", "distances"])
+            results = self.collection.query(
+                query_embeddings=[query_embedding],
+                n_results=100,
+                where={"type": "bounty"},
+                include=["metadatas", "documents", "distances"]
+            )
             
             retrieved_docs = []
             for i in range(len(results["documents"][0])):
                 doc = results["documents"][0][i]
-                if doc is None:
-                    continue
+                if doc is None: continue
                     
                 metadata = results["metadatas"][0][i]
                 score = 1.0 - results["distances"][0][i]
@@ -35,12 +40,39 @@ class Retriever:
             return retrieved_docs
             
         else:
-            results = self.collection.query(query_embeddings=[query_embedding], n_results=top_k, include=["metadatas", "documents", "distances"])
+            tutorial_results = self.collection.query(
+                query_embeddings=[query_embedding],
+                n_results=10,
+                where={"type": "tutorial"},
+                include=["metadatas", "documents", "distances"]
+            )
+            
+            other_results = self.collection.query(
+                query_embeddings=[query_embedding],
+                n_results=top_k,
+                where={"type": {"$ne": "tutorial"}},
+                include=["metadatas", "documents", "distances"]
+            )
             
             retrieved_docs = []
-            for i in range(len(results["documents"][0])):
-                doc = results["documents"][0][i]
-                if doc is None:
-                    continue
-                retrieved_docs.append({"content": doc,"metadata": results["metadatas"][0][i],"score": 1.0 - results["distances"][0][i]})
+            
+            for i in range(len(tutorial_results["documents"][0])):
+                doc = tutorial_results["documents"][0][i]
+                if doc is None: continue
+                retrieved_docs.append({
+                    "content": doc,
+                    "metadata": tutorial_results["metadatas"][0][i],
+                    "score": 1.0 - tutorial_results["distances"][0][i]
+                })
+            
+            for i in range(len(other_results["documents"][0])):
+                doc = other_results["documents"][0][i]
+                if doc is None: continue
+                retrieved_docs.append({
+                    "content": doc,
+                    "metadata": other_results["metadatas"][0][i],
+                    "score": 1.0 - other_results["distances"][0][i]
+                })
+            
+            retrieved_docs = sorted(retrieved_docs, key=lambda x: x["score"], reverse=True)
             return retrieved_docs
