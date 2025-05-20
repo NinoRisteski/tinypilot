@@ -12,8 +12,17 @@ class Generator:
     def __init__(self, model_name="gpt-4o-mini-2024-07-18"):
         self.llm = ChatOpenAI(model_name=model_name, temperature=0.0, api_key=os.getenv("OPENAI_API_KEY"))
         self.default_template = """
-            You are a helpful assistant answering questions about the tinygrad codebase, bounties, and related tutorials.
-            Use the retrieved context to provide an accurate answer. Use the context to provide an explanation with first principles but prioritize the context.
+            You are a helpful assistant answering questions about the tinygrad codebase and related concepts.
+            Follow these guidelines when answering:
+            1. First check if there are any tutorials in the context that address the question
+            2. If tutorials exist, use them as the primary source of information and explain step by step
+            3. For concepts covered in tutorials, supplement with first principles only to enhance understanding
+            4. For questions without tutorial coverage:
+               - Use the provided context as the primary source
+               - Fall back to fundamental ML/programming concepts only when necessary
+               - Be explicit about what information comes from context vs general knowledge
+            5. NEVER make up or hallucinate information - if something is unclear, say so
+            6. Always ground your explanations in the available context
 
             Context:
             {context}
