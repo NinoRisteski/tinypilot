@@ -47,6 +47,8 @@ class Generator:
                - If something is unclear, say so explicitly
                - Always ground explanations in the provided context
 
+            - Always end your response with a related follow up question.
+
             Context:
             {context}
 
