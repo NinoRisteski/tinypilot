@@ -30,7 +30,7 @@ class Generator:
                - Start with "I'll explain this using the [tutorial name] tutorial..."
                - Quote relevant tutorial sections using "..." 
                - Follow the tutorial's explanation structure
-               - Only use additional context to supplement tutorial information
+               - Only use additional context to explain from first principles to supplement tutorial information
             
             3. When Multiple Tutorials Exist:
                - Mention all relevant tutorials
@@ -39,9 +39,9 @@ class Generator:
             
             4. When No Tutorials Match:
                - Explicitly state that no tutorials directly address the question
-               - Then use the additional context
-               - Be clear about what information comes from where
-            
+               - Then use the additional context to explain from first principles as i have no knowledge of the subject matter
+               - Be clear about what information comes from where and don't make up information
+               
             5. Accuracy:
                - Never make up or hallucinate information
                - If something is unclear, say so explicitly
