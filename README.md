@@ -84,5 +84,6 @@ This will:
 - OpenAI integration
 - Rich terminal UI
 
+### Next update?
 
 
